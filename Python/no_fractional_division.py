@@ -44,11 +44,11 @@ class Divisor:
         except:
             # Protection - Any non legal input to the Float Dtype
             self.refusal_Argument()
-
+    
     def refusal_Argument(self): 
         # Asks the user if they want to reboot the input function if they used a erroneous input
         print('This input was not accepted as a Float')
-        user_Input_Str = input('Do you want to restart this application?')
+        user_Input_Str = input('Do you want to restart this application?:    ')
         if user_Input_Str.lower() in ['y', 'yes', 'true']:
                 self.inputs()
         else:
