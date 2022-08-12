@@ -1,9 +1,10 @@
+#include <cstdlib>
 #include <ios>
 #include <iostream>
 #include <limits>
 #include <string>
 #include <iomanip>
-using namespace std;
+#include <stdlib.h>
 
 class Divisor
 {
@@ -26,34 +27,45 @@ class Divisor
     void input_Data()
     {
       clean_Console();
-      cout << "Please input a Dividend as a Float:  ";
-      cin >> dividend_Float;
-      check_Input();
-      cout << "Please input a Divisor as a Float: ";
-      cin >> divisor_Float;
-      check_Input();
+      std::cout << "Please input a Dividend as a Float:  ";
+      std::cin >> dividend_Float;
+      check_Input(dividend_Float);
+      std::cout << "Please input a Divisor as a Float: ";
+      std::cin >> divisor_Float;
+      check_Input(divisor_Float);
     }
 
-    void check_Input()
+    void check_Input(float input_Float)
     {
-      if(cin.fail()) 
+      if(std::cin.fail() || input_Float == 0) 
       {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "This input was not accepted due to incompatible data" << endl;
-        clean_Console();
-        input_Data();
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "This input was not accepted due to incompatible data" << std::endl;
+        std::cout << "Would you like to restart the application (Y/N)? : ";
+        
+        char x;
+        std::cin >> x;
+        if((char) std::tolower(x) == 'y'){
+          clean_Console();
+          input_Data();
+        }
+        else
+        {
+          exit(EXIT_FAILURE);
+        }
       }
     }
     
     void logic()
     {
-      string dividend_String(to_string(dividend_Float));
-      for(int i = 1; dividend_String[i] == '.' ; i++)
+      std::string dividend_String(std::to_string(dividend_Float));
+      for(int i = 0; dividend_String[i] != '.' ; i++)
       {
-          varying_Reciprocal_Float = varying_Reciprocal_Float * 0.1;
-          indices_10_Int = indices_10_Int * 10;
+        varying_Reciprocal_Float = varying_Reciprocal_Float * 0.1;
+        indices_10_Int = indices_10_Int * 10;
       }
+
       float fixed_Reciprocal_Float = varying_Reciprocal_Float * 0.1;
       
       while(divisor_Float * varying_Reciprocal_Float < 1 - fixed_Reciprocal_Float)
@@ -61,13 +73,13 @@ class Divisor
         varying_Reciprocal_Float = varying_Reciprocal_Float + fixed_Reciprocal_Float;
       }
       
-      cout << "Reciprocal:  " << varying_Reciprocal_Float << endl;
-      cout << "Fixed Iterative Modifier:  " << indices_10_Int << endl;
+      std::cout << "Reciprocal:  " << varying_Reciprocal_Float << std::endl;
+      std::cout << "Fixed Iterative Modifier:  " << fixed_Reciprocal_Float << std::endl;
 
       varying_Reciprocal_Float = varying_Reciprocal_Float * indices_10_Int * 100;
-      string varying_Reciprocal_String = to_string(fixed_Reciprocal_Float);
+      std::string varying_Reciprocal_String = std::to_string(fixed_Reciprocal_Float);
 
-      string program_Output_String = "";
+      std::string program_Output_String = "";
              
       if(dividend_Float == divisor_Float)
       {
@@ -77,7 +89,7 @@ class Divisor
       {
         if(varying_Reciprocal_String[1] == varying_Reciprocal_String[2] && varying_Reciprocal_String[1] == varying_Reciprocal_String[3])
         {
-          cout << 1 << endl;
+          std::cout << "Recursive Detected, In the form 0.x" << std::endl;
           program_Output_String = "0.";
           for(int i = 1; i < 8; i++)
           {
@@ -86,7 +98,7 @@ class Divisor
         }
         else if(varying_Reciprocal_String[1] == varying_Reciprocal_String[2])
         {
-          cout << 2 << endl;
+          std::cout << "Recursive Detected, In the form 0.1x" << std::endl;
           program_Output_String = "0.1";
           for(int i = 1; i < 8; i++)
           {
@@ -95,27 +107,36 @@ class Divisor
         }
         else 
         {
-          cout << 3 << endl;
-          cout << varying_Reciprocal_Float << endl;
-          program_Output_String = varying_Reciprocal_String;
+          std::cout << "Not Recursive, jumping to multiplication" << std::endl;
+          program_Output_String = std::to_string(varying_Reciprocal_Float);
         }
-        cout << stof(program_Output_String) << endl;
+        std::cout << program_Output_String << std::endl;
         final_Answer_Float = stof(program_Output_String) * dividend_Float;
       }
     }
     void output()
     {
-      cout << dividend_Float << " / " << divisor_Float << " = " << setprecision(3) << final_Answer_Float << endl;
+      std::cout << dividend_Float << " / " << divisor_Float << " = " << std::setprecision(3) << final_Answer_Float << std::endl;
     }
 
 };
 
 int main() 
 {
+  bool x = true;
+  while(x)
+  {
   Divisor divisor;
   divisor.input_Data();
   divisor.logic();
   divisor.output();
 
+  char x;
+  std::cin >> x;
+  if((char) std::tolower(x) == 'n')
+  {
+    x = false;
+  }
+  }
   return 0;
 }
